@@ -1,0 +1,3 @@
+---
+# defaults file for bvansomeren.cockpit
+cockpit_disable_tls: no

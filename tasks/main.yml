@@ -1,0 +1,17 @@
+---
+# tasks file for bvansomeren.cockpit
+
+- name: ensure cockpit is installed
+  package: name=cockpit state=present
+
+- name: disable cockpit internal TLS
+  ini_file: dest=/usr/lib/systemd/system/cockpit.service section=Service option=ExecStart value="/usr/libexec/cockpit-ws --no-tls"
+  register: systemd
+  when: cockpit_disable_tls
+
+- name: reload systemd if unit file changed
+  command: systemctl daemon-reload
+  when: systemd.changed
+
+- name: ensure Cockpit is started
+  service: name=cockpit state=started enabled=yes
