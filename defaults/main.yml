@@ -1,3 +1,7 @@
 ---
 # defaults file for bvansomeren.cockpit
 cockpit_disable_tls: no
+cockpit_packages:
+  - cockpit
+  - cockpit-bridge
+  - cockpit-machines
