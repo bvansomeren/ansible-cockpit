@@ -12,6 +12,13 @@
   register: systemd
   when: cockpit_disable_tls
 
+- name: enable firewall
+  firewalld:
+    service: cockpit
+    permanent: true
+    immediate: true
+    state: enabled
+
 - name: reload systemd if unit file changed
   command: systemctl daemon-reload
   when: systemd.changed
