@@ -17,34 +17,46 @@
   when: cockpit_disable_tls
 
 - name: change default listen port
-  block:
-    - ini_file:
-        dest: "/etc/systemd/system/cockpit.socket.d/listen.conf"
-        create: true
-        section: "Socket"
-        value: |
-          ListenStream=
-          ListenStream={{ cockpit_listen_port }}
-  when: cockpit_listen_port is not "9090"
+  blockinfile:
+    dest: "/etc/systemd/system/cockpit.socket.d/listen.conf"
+    create: true
+    backup: true
+    owner: root
+    group: root
+    mode: 0755
+    state: present
+    block: |
+      [Socket]
+      ListenStream=
+      ListenStream={{ cockpit_listen_port }}
+  when: cockpit_listen_port != "9090"
 
 - name: do selinux change if required
   block:
-    - package:
+    - name: install package
+      package:
         name: policycoreutils-python
         state: present
-    - seport:
+    - name: enable seport
+      seport:
         ports: "{{ cockpit_listen_port }}"
         proto: tcp
         setype: websm_port_t
         state: present
-  when: cockpit_listen_port is not "9090" and cockpit_use_selinux
+  when: cockpit_listen_port != "9090" and cockpit_use_selinux
 
 - name: enable firewall
-  firewalld:
-    port: "{{ cockpit_listen_port }}/tcp"
-    permanent: true
-    immediate: true
-    state: enabled
+  block:
+    - name: install firewalld bindings
+      package:
+        name: python-firewall
+        state: latest
+    - name: enable firewalld
+      firewalld:
+        port: "{{ cockpit_listen_port }}/tcp"
+        permanent: true
+        immediate: true
+        state: enabled
   when: cockpit_use_firewalld
 
 - name: ensure Cockpit is started
