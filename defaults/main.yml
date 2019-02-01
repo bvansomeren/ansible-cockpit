@@ -5,3 +5,5 @@ cockpit_packages:
   - cockpit
   - cockpit-bridge
   - cockpit-machines
+cockpit_use_firewalld: false
+cockpit_listen_port: 9090

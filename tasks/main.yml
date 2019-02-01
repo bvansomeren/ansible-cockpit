@@ -14,10 +14,11 @@
 
 - name: enable firewall
   firewalld:
-    service: cockpit
+    port: "{{ cockpit_listen_port }}/tcp"
     permanent: true
     immediate: true
     state: enabled
+  when: cockpit_use_firewalld
 
 - name: reload systemd if unit file changed
   command: systemctl daemon-reload
