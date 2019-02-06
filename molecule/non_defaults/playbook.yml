@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  vars:
+    cockpit_listen_port: 9091
+    cockpit_use_selinux: true
+  roles:
+    - role: ansible-cockpit
