@@ -50,7 +50,7 @@
     - name: install firewalld bindings
       package:
         name: python-firewall
-        state: latest
+        state: present
     - name: enable firewalld
       firewalld:
         port: "{{ cockpit_listen_port }}/tcp"
